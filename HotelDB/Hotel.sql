@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[Hotel]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [Naam] NVARCHAR(MAX) NOT NULL
+)
