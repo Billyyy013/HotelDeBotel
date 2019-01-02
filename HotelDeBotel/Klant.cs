@@ -17,17 +17,15 @@ namespace HotelDeBotel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Klant()
         {
-            this.Kamer = new HashSet<Kamer>();
+            this.Kamers = new HashSet<Kamer>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string E_Mail { get; set; }
-        public int RoomId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Kamer> Kamer { get; set; }
-        public virtual Kamer Kamer1 { get; set; }
+        public virtual ICollection<Kamer> Kamers { get; set; }
     }
 }

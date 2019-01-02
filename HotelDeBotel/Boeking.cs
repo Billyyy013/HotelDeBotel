@@ -17,17 +17,20 @@ namespace HotelDeBotel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Boeking()
         {
-            this.Korting = new HashSet<Korting>();
+            this.Kortings = new HashSet<Korting>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public System.DateTime Date { get; set; }
+        public System.DateTime StartDate { get; set; }
         public int AmountOfPersons { get; set; }
         public int HotelId { get; set; }
+        public int KamerId { get; set; }
+        public System.DateTime EndDate { get; set; }
     
         public virtual Hotel Hotel { get; set; }
+        public virtual Kamer Kamer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Korting> Korting { get; set; }
+        public virtual ICollection<Korting> Kortings { get; set; }
     }
 }

@@ -26,10 +26,10 @@ namespace HotelDeBotel
         }
     
         public virtual DbSet<C__RefactorLog> C__RefactorLog { get; set; }
-        public virtual DbSet<Boeking> Boeking { get; set; }
-        public virtual DbSet<Hotel> Hotel { get; set; }
-        public virtual DbSet<Kamer> Kamer { get; set; }
-        public virtual DbSet<Klant> Klant { get; set; }
-        public virtual DbSet<Korting> Korting { get; set; }
+        public virtual DbSet<Boeking> Boekings { get; set; }
+        public virtual DbSet<Hotel> Hotels { get; set; }
+        public virtual DbSet<Kamer> Kamers { get; set; }
+        public virtual DbSet<Klant> Klants { get; set; }
+        public virtual DbSet<Korting> Kortings { get; set; }
     }
 }

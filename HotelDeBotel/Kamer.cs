@@ -17,7 +17,8 @@ namespace HotelDeBotel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Kamer()
         {
-            this.Klant1 = new HashSet<Klant>();
+            this.Boekings = new HashSet<Boeking>();
+            this.Klants = new HashSet<Klant>();
         }
     
         public int Id { get; set; }
@@ -26,11 +27,11 @@ namespace HotelDeBotel
         public string Price { get; set; }
         public string Image { get; set; }
         public int HotelId { get; set; }
-        public int KlantId { get; set; }
     
-        public virtual Hotel Hotel { get; set; }
-        public virtual Klant Klant { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Klant> Klant1 { get; set; }
+        public virtual ICollection<Boeking> Boekings { get; set; }
+        public virtual Hotel Hotel { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Klant> Klants { get; set; }
     }
 }

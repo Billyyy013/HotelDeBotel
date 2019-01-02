@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="HotelDeBotelModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="HotelDeBotelModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__RefactorLog">
           <Key>
             <PropertyRef Name="OperationKey" />
@@ -17,9 +17,11 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
           <Property Name="AmountOfPersons" Type="int" Nullable="false" />
           <Property Name="HotelId" Type="int" Nullable="false" />
+          <Property Name="KamerId" Type="int" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
         </EntityType>
         <EntityType Name="Hotel">
           <Key>
@@ -38,7 +40,6 @@
           <Property Name="Price" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Image" Type="nvarchar(max)" Nullable="false" />
           <Property Name="HotelId" Type="int" Nullable="false" />
-          <Property Name="KlantId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Klant">
           <Key>
@@ -47,8 +48,15 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Address" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="E-Mail" Type="nvarchar(max)" />
-          <Property Name="RoomId" Type="int" Nullable="false" />
+          <Property Name="E-Mail" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="KlantKamer">
+          <Key>
+            <PropertyRef Name="KlantId" />
+            <PropertyRef Name="KamerId" />
+          </Key>
+          <Property Name="KlantId" Type="int" Nullable="false" />
+          <Property Name="KamerId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Korting">
           <Key>
@@ -58,6 +66,30 @@
           <Property Name="Percentage" Type="decimal" Precision="3" Scale="2" Nullable="false" />
           <Property Name="BoekingId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK__KlantKame__Kamer__48CFD27E">
+          <End Role="Kamer" Type="Self.Kamer" Multiplicity="1" />
+          <End Role="KlantKamer" Type="Self.KlantKamer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kamer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="KlantKamer">
+              <PropertyRef Name="KamerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KlantKame__Klant__47DBAE45">
+          <End Role="Klant" Type="Self.Klant" Multiplicity="1" />
+          <End Role="KlantKamer" Type="Self.KlantKamer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klant">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="KlantKamer">
+              <PropertyRef Name="KlantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Boeking_ToTable">
           <End Role="Hotel" Type="Self.Hotel" Multiplicity="1" />
           <End Role="Boeking" Type="Self.Boeking" Multiplicity="*" />
@@ -70,6 +102,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Boeking_ToTable_1">
+          <End Role="Kamer" Type="Self.Kamer" Multiplicity="1" />
+          <End Role="Boeking" Type="Self.Boeking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kamer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Boeking">
+              <PropertyRef Name="KamerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Kamer_ToHotel">
           <End Role="Hotel" Type="Self.Hotel" Multiplicity="1" />
           <End Role="Kamer" Type="Self.Kamer" Multiplicity="*" />
@@ -79,30 +123,6 @@
             </Principal>
             <Dependent Role="Kamer">
               <PropertyRef Name="HotelId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Kamer_ToKlant">
-          <End Role="Klant" Type="Self.Klant" Multiplicity="1" />
-          <End Role="Kamer" Type="Self.Kamer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Klant">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Kamer">
-              <PropertyRef Name="KlantId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Klant_ToTable">
-          <End Role="Kamer" Type="Self.Kamer" Multiplicity="1" />
-          <End Role="Klant" Type="Self.Klant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Kamer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Klant">
-              <PropertyRef Name="RoomId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -124,29 +144,35 @@
           <EntitySet Name="Hotel" EntityType="Self.Hotel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Kamer" EntityType="Self.Kamer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Klant" EntityType="Self.Klant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KlantKamer" EntityType="Self.KlantKamer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Korting" EntityType="Self.Korting" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__KlantKame__Kamer__48CFD27E" Association="Self.FK__KlantKame__Kamer__48CFD27E">
+            <End Role="Kamer" EntitySet="Kamer" />
+            <End Role="KlantKamer" EntitySet="KlantKamer" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KlantKame__Klant__47DBAE45" Association="Self.FK__KlantKame__Klant__47DBAE45">
+            <End Role="Klant" EntitySet="Klant" />
+            <End Role="KlantKamer" EntitySet="KlantKamer" />
+          </AssociationSet>
           <AssociationSet Name="FK_Boeking_ToTable" Association="Self.FK_Boeking_ToTable">
             <End Role="Hotel" EntitySet="Hotel" />
+            <End Role="Boeking" EntitySet="Boeking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Boeking_ToTable_1" Association="Self.FK_Boeking_ToTable_1">
+            <End Role="Kamer" EntitySet="Kamer" />
             <End Role="Boeking" EntitySet="Boeking" />
           </AssociationSet>
           <AssociationSet Name="FK_Kamer_ToHotel" Association="Self.FK_Kamer_ToHotel">
             <End Role="Hotel" EntitySet="Hotel" />
             <End Role="Kamer" EntitySet="Kamer" />
           </AssociationSet>
-          <AssociationSet Name="FK_Kamer_ToKlant" Association="Self.FK_Kamer_ToKlant">
-            <End Role="Klant" EntitySet="Klant" />
-            <End Role="Kamer" EntitySet="Kamer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Klant_ToTable" Association="Self.FK_Klant_ToTable">
-            <End Role="Kamer" EntitySet="Kamer" />
-            <End Role="Klant" EntitySet="Klant" />
-          </AssociationSet>
           <AssociationSet Name="FK_Korting_ToTable" Association="Self.FK_Korting_ToTable">
             <End Role="Boeking" EntitySet="Boeking" />
             <End Role="Korting" EntitySet="Korting" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HotelDeBotelModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -162,20 +188,23 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="AmountOfPersons" Type="Int32" Nullable="false" />
           <Property Name="HotelId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Hotel" Relationship="HotelDeBotelModel.FK_Boeking_ToTable" FromRole="Boeking" ToRole="Hotel" />
-          <NavigationProperty Name="Korting" Relationship="HotelDeBotelModel.FK_Korting_ToTable" FromRole="Boeking" ToRole="Korting" />
+          <Property Name="KamerId" Type="Int32" Nullable="false" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Hotel" Relationship="Self.FK_Boeking_ToTable" FromRole="Boeking" ToRole="Hotel" />
+          <NavigationProperty Name="Kamer" Relationship="Self.FK_Boeking_ToTable_1" FromRole="Boeking" ToRole="Kamer" />
+          <NavigationProperty Name="Kortings" Relationship="Self.FK_Korting_ToTable" FromRole="Boeking" ToRole="Korting" />
         </EntityType>
         <EntityType Name="Hotel">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Naam" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Boeking" Relationship="HotelDeBotelModel.FK_Boeking_ToTable" FromRole="Hotel" ToRole="Boeking" />
-          <NavigationProperty Name="Kamer" Relationship="HotelDeBotelModel.FK_Kamer_ToHotel" FromRole="Hotel" ToRole="Kamer" />
+          <Property Name="Naam" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Boekings" Relationship="Self.FK_Boeking_ToTable" FromRole="Hotel" ToRole="Boeking" />
+          <NavigationProperty Name="Kamers" Relationship="Self.FK_Kamer_ToHotel" FromRole="Hotel" ToRole="Kamer" />
         </EntityType>
         <EntityType Name="Kamer">
           <Key>
@@ -187,10 +216,9 @@
           <Property Name="Price" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="HotelId" Type="Int32" Nullable="false" />
-          <Property Name="KlantId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Hotel" Relationship="HotelDeBotelModel.FK_Kamer_ToHotel" FromRole="Kamer" ToRole="Hotel" />
-          <NavigationProperty Name="Klant" Relationship="HotelDeBotelModel.FK_Kamer_ToKlant" FromRole="Kamer" ToRole="Klant" />
-          <NavigationProperty Name="Klant1" Relationship="HotelDeBotelModel.FK_Klant_ToTable" FromRole="Kamer" ToRole="Klant" />
+          <NavigationProperty Name="Boekings" Relationship="Self.FK_Boeking_ToTable_1" FromRole="Kamer" ToRole="Boeking" />
+          <NavigationProperty Name="Hotel" Relationship="Self.FK_Kamer_ToHotel" FromRole="Kamer" ToRole="Hotel" />
+          <NavigationProperty Name="Klants" Relationship="Self.KlantKamer" FromRole="Kamer" ToRole="Klant" />
         </EntityType>
         <EntityType Name="Klant">
           <Key>
@@ -199,10 +227,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="E_Mail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RoomId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Kamer" Relationship="HotelDeBotelModel.FK_Kamer_ToKlant" FromRole="Klant" ToRole="Kamer" />
-          <NavigationProperty Name="Kamer1" Relationship="HotelDeBotelModel.FK_Klant_ToTable" FromRole="Klant" ToRole="Kamer" />
+          <Property Name="E_Mail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Kamers" Relationship="Self.KlantKamer" FromRole="Klant" ToRole="Kamer" />
         </EntityType>
         <EntityType Name="Korting">
           <Key>
@@ -211,39 +237,11 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Percentage" Type="Decimal" Precision="3" Scale="2" Nullable="false" />
           <Property Name="BoekingId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Boeking" Relationship="HotelDeBotelModel.FK_Korting_ToTable" FromRole="Korting" ToRole="Boeking" />
+          <NavigationProperty Name="Boeking" Relationship="Self.FK_Korting_ToTable" FromRole="Korting" ToRole="Boeking" />
         </EntityType>
-        <EntityContainer Name="HotelDeBotelEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="C__RefactorLog" EntityType="Self.C__RefactorLog" />
-          <EntitySet Name="Boeking" EntityType="Self.Boeking" />
-          <EntitySet Name="Hotel" EntityType="Self.Hotel" />
-          <EntitySet Name="Kamer" EntityType="Self.Kamer" />
-          <EntitySet Name="Klant" EntityType="Self.Klant" />
-          <EntitySet Name="Korting" EntityType="Self.Korting" />
-          <AssociationSet Name="FK_Boeking_ToTable" Association="HotelDeBotelModel.FK_Boeking_ToTable">
-            <End Role="Hotel" EntitySet="Hotel" />
-            <End Role="Boeking" EntitySet="Boeking" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Korting_ToTable" Association="HotelDeBotelModel.FK_Korting_ToTable">
-            <End Role="Boeking" EntitySet="Boeking" />
-            <End Role="Korting" EntitySet="Korting" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Kamer_ToHotel" Association="HotelDeBotelModel.FK_Kamer_ToHotel">
-            <End Role="Hotel" EntitySet="Hotel" />
-            <End Role="Kamer" EntitySet="Kamer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Kamer_ToKlant" Association="HotelDeBotelModel.FK_Kamer_ToKlant">
-            <End Role="Klant" EntitySet="Klant" />
-            <End Role="Kamer" EntitySet="Kamer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Klant_ToTable" Association="HotelDeBotelModel.FK_Klant_ToTable">
-            <End Role="Kamer" EntitySet="Kamer" />
-            <End Role="Klant" EntitySet="Klant" />
-          </AssociationSet>
-        </EntityContainer>
         <Association Name="FK_Boeking_ToTable">
-          <End Type="HotelDeBotelModel.Hotel" Role="Hotel" Multiplicity="1" />
-          <End Type="HotelDeBotelModel.Boeking" Role="Boeking" Multiplicity="*" />
+          <End Role="Hotel" Type="Self.Hotel" Multiplicity="1" />
+          <End Role="Boeking" Type="Self.Boeking" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Hotel">
               <PropertyRef Name="Id" />
@@ -253,9 +251,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Boeking_ToTable_1">
+          <End Role="Kamer" Type="Self.Kamer" Multiplicity="1" />
+          <End Role="Boeking" Type="Self.Boeking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kamer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Boeking">
+              <PropertyRef Name="KamerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Korting_ToTable">
-          <End Type="HotelDeBotelModel.Boeking" Role="Boeking" Multiplicity="1" />
-          <End Type="HotelDeBotelModel.Korting" Role="Korting" Multiplicity="*" />
+          <End Role="Boeking" Type="Self.Boeking" Multiplicity="1" />
+          <End Role="Korting" Type="Self.Korting" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Boeking">
               <PropertyRef Name="Id" />
@@ -266,8 +276,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Kamer_ToHotel">
-          <End Type="HotelDeBotelModel.Hotel" Role="Hotel" Multiplicity="1" />
-          <End Type="HotelDeBotelModel.Kamer" Role="Kamer" Multiplicity="*" />
+          <End Role="Hotel" Type="Self.Hotel" Multiplicity="1" />
+          <End Role="Kamer" Type="Self.Kamer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Hotel">
               <PropertyRef Name="Id" />
@@ -277,30 +287,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Kamer_ToKlant">
-          <End Type="HotelDeBotelModel.Klant" Role="Klant" Multiplicity="1" />
-          <End Type="HotelDeBotelModel.Kamer" Role="Kamer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Klant">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Kamer">
-              <PropertyRef Name="KlantId" />
-            </Dependent>
-          </ReferentialConstraint>
+        <Association Name="KlantKamer">
+          <End Role="Kamer" Type="Self.Kamer" Multiplicity="*" />
+          <End Role="Klant" Type="Self.Klant" Multiplicity="*" />
         </Association>
-        <Association Name="FK_Klant_ToTable">
-          <End Type="HotelDeBotelModel.Kamer" Role="Kamer" Multiplicity="1" />
-          <End Type="HotelDeBotelModel.Klant" Role="Klant" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Kamer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Klant">
-              <PropertyRef Name="RoomId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <EntityContainer Name="HotelDeBotelEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__RefactorLog" EntityType="Self.C__RefactorLog" />
+          <EntitySet Name="Boekings" EntityType="Self.Boeking" />
+          <EntitySet Name="Hotels" EntityType="Self.Hotel" />
+          <EntitySet Name="Kamers" EntityType="Self.Kamer" />
+          <EntitySet Name="Klants" EntityType="Self.Klant" />
+          <EntitySet Name="Kortings" EntityType="Self.Korting" />
+          <AssociationSet Name="FK_Boeking_ToTable" Association="Self.FK_Boeking_ToTable">
+            <End Role="Hotel" EntitySet="Hotels" />
+            <End Role="Boeking" EntitySet="Boekings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Boeking_ToTable_1" Association="Self.FK_Boeking_ToTable_1">
+            <End Role="Kamer" EntitySet="Kamers" />
+            <End Role="Boeking" EntitySet="Boekings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Korting_ToTable" Association="Self.FK_Korting_ToTable">
+            <End Role="Boeking" EntitySet="Boekings" />
+            <End Role="Korting" EntitySet="Kortings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kamer_ToHotel" Association="Self.FK_Kamer_ToHotel">
+            <End Role="Hotel" EntitySet="Hotels" />
+            <End Role="Kamer" EntitySet="Kamers" />
+          </AssociationSet>
+          <AssociationSet Name="KlantKamer" Association="Self.KlantKamer">
+            <End Role="Kamer" EntitySet="Kamers" />
+            <End Role="Klant" EntitySet="Klants" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -314,42 +332,42 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Boeking">
+          <EntitySetMapping Name="Boekings">
             <EntityTypeMapping TypeName="HotelDeBotelModel.Boeking">
               <MappingFragment StoreEntitySet="Boeking">
-                <ScalarProperty Name="HotelId" ColumnName="HotelId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="AmountOfPersons" ColumnName="AmountOfPersons" />
+                <ScalarProperty Name="HotelId" ColumnName="HotelId" />
+                <ScalarProperty Name="KamerId" ColumnName="KamerId" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Hotel">
+          <EntitySetMapping Name="Hotels">
             <EntityTypeMapping TypeName="HotelDeBotelModel.Hotel">
               <MappingFragment StoreEntitySet="Hotel">
-                <ScalarProperty Name="Naam" ColumnName="Naam" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Naam" ColumnName="Naam" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Kamer">
+          <EntitySetMapping Name="Kamers">
             <EntityTypeMapping TypeName="HotelDeBotelModel.Kamer">
               <MappingFragment StoreEntitySet="Kamer">
-                <ScalarProperty Name="KlantId" ColumnName="KlantId" />
-                <ScalarProperty Name="HotelId" ColumnName="HotelId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Naam" ColumnName="Naam" />
                 <ScalarProperty Name="Size" ColumnName="Size" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="HotelId" ColumnName="HotelId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Klant">
+          <EntitySetMapping Name="Klants">
             <EntityTypeMapping TypeName="HotelDeBotelModel.Klant">
               <MappingFragment StoreEntitySet="Klant">
-                <ScalarProperty Name="RoomId" ColumnName="RoomId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
@@ -357,15 +375,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Korting">
+          <EntitySetMapping Name="Kortings">
             <EntityTypeMapping TypeName="HotelDeBotelModel.Korting">
               <MappingFragment StoreEntitySet="Korting">
-                <ScalarProperty Name="BoekingId" ColumnName="BoekingId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Percentage" ColumnName="Percentage" />
+                <ScalarProperty Name="BoekingId" ColumnName="BoekingId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="KlantKamer" TypeName="HotelDeBotelModel.KlantKamer" StoreEntitySet="KlantKamer">
+            <EndProperty Name="Kamer">
+              <ScalarProperty Name="Id" ColumnName="KamerId" />
+            </EndProperty>
+            <EndProperty Name="Klant">
+              <ScalarProperty Name="Id" ColumnName="KlantId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -380,7 +406,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

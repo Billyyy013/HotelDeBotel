@@ -64,11 +64,15 @@
     <Build Include="Boeking.sql" />
     <Build Include="Klant.sql" />
     <Build Include="Korting.sql" />
+    <Build Include="KlantKamer.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="HotelDB.refactorlog" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HotelDB.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
